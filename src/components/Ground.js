@@ -7,7 +7,10 @@ import { useStore } from '../hooks/useStore';
 
 export default function Ground(props) {
   const [ref] = usePlane(() => ({ rotation: [-Math.PI / 2, 0, 0], ...props }));
-  const [addCube, type] = useStore((state) => [state.addCube, state.type]);
+  const [addCube, activeTexture] = useStore((state) => [
+    state.addCube,
+    state.texture,
+  ]);
   const texture = new TextureLoader().load(grass);
   texture.wrapS = RepeatWrapping;
   texture.wrapT = RepeatWrapping;
@@ -19,11 +22,16 @@ export default function Ground(props) {
       onClick={(e) => {
         e.stopPropagation();
         const { x, y, z } = e.point;
-        addCube(Math.ceil(x), Math.ceil(y), Math.ceil(z), type);
+        addCube({
+          x: Math.ceil(x),
+          y: Math.ceil(y),
+          z: Math.ceil(z),
+          type: activeTexture,
+        });
       }}
     >
-      <planeBufferGeometry attach="geometry" args={[100, 100]} />
-      <meshStandardMaterial map={texture} attach="material" />
+      <planeBufferGeometry attach='geometry' args={[100, 100]} />
+      <meshStandardMaterial map={texture} attach='material' />
     </mesh>
   );
 }
